@@ -62,13 +62,13 @@ $('#formBox').on('submit','#userForm',function() {
   var formData = $(this).serialize();
   var id = $(this).attr('data-id')
   // console.log(id);
-  console.log(formData)
+  // console.log(formData)
   $.ajax({
     type:'put',//get或post
     url:'/users/' + id,//请求的地址
     data:formData,
     success:function(result){//成功的回调函数
-      // location.reload()
+      location.reload()
     }
   })
   return false;
