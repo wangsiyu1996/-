@@ -25,48 +25,50 @@
       <!-- <div class="alert alert-danger">
         <strong>错误！</strong>发生XXX错误
       </div> -->
-      <form class="row" id="addForm">
-        <div class="col-md-9">
-          <div class="form-group">
-            <label for="title">标题</label>
-            <input id="title" class="form-control input-lg" type="text" placeholder="文章标题" name="title">
-          </div>
-          <div class="form-group">
-            <label for="content">内容</label>
-            <textarea id="content" class="form-control input-lg" cols="30" rows="10" placeholder="内容" name="content"></textarea>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="form-group">
-            <label for="feature">文章封面</label>
-            <!-- show when image chose -->
-            <img class="help-block thumbnail" style="display: none">
-            <input id="feature" class="form-control" type="file">
-            <input type="hidden" name="thumbnail" id="hiddenAvatar">
-          </div>
-          <div class="form-group">
-            <label for="category">所属分类</label>
-            <select id="category" class="form-control" name="category">
-              <option value="1">未分类</option>
-              <option value="2">潮生活</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="created">发布时间</label>
-            <input id="created" class="form-control" type="date" name="createAt">
-          </div>
-          <div class="form-group">
-            <label for="status">状态</label>
-            <select id="status" class="form-control" name="state">
-              <option value="0">激活</option>
-              <option value="1">未激活</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <button class="btn btn-primary" type="submit">保存</button>
-          </div>
-        </div>
-      </form>
+      <div id="formBox">
+          <form class="row" id="addForm">
+              <div class="col-md-9">
+                <div class="form-group">
+                  <label for="title">标题</label>
+                  <input id="title" class="form-control input-lg" type="text" placeholder="文章标题" name="title">
+                </div>
+                <div class="form-group">
+                  <label for="content">内容</label>
+                  <textarea id="content" class="form-control input-lg" cols="30" rows="10" placeholder="内容" name="content"></textarea>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="feature">文章封面</label>
+                  <!-- show when image chose -->
+                  <img class="help-block thumbnail" style="display: none">
+                  <input id="feature" class="form-control" type="file">
+                  <input type="hidden" name="thumbnail" id="hiddenAvatar">
+                </div>
+                <div class="form-group">
+                  <label for="category">所属分类</label>
+                  <select id="category" class="form-control" name="category">
+                    <option value="1">未分类</option>
+                    <option value="2">潮生活</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="created">发布时间</label>
+                  <input id="created" class="form-control" type="date" name="createAt">
+                </div>
+                <div class="form-group">
+                  <label for="status">状态</label>
+                  <select id="status" class="form-control" name="state">
+                    <option value="0">激活</option>
+                    <option value="1">未激活</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <button class="btn btn-primary" type="submit">保存</button>
+                </div>
+              </div>
+            </form>
+      </div>
     </div>
   </div>
 
@@ -117,49 +119,51 @@
      <option value="{{$value._id}}">{{$value.title}}</option>
   {{/each}}
 </script>
-<script>
-    //分页显示
-    $.ajax({
-      type:'get',//get或post
-      url:'/categories',//请求的地址
-      data:{},//如果不需要传，则注释掉 请求的参数，a=1&b=2或{a:1,b:2}或者jq中的serialize方法，或者formData收集
-      dataType:'json',
-      success:function(result){//成功的回调函数
-        // console.log(result)
-        var html = template('categoryTpl',{data:result});
-        $('#category').html(html);
-      }
-    })
-    $('#feature').on('change',function(){
-      // console.dir(this);
-      var formData = new FormData()
-      formData.append('avatar',this.files[0]);
-      $.ajax({
-        type:'post',//get或post
-        url:'/upload',//请求的地址
-        contentType:false,
-        processData:false,
-        data:formData,
-        success:function(result){//成功的回调函数
-          // console.log(result)
-          $('.thumbnail').attr('src',result[0].avatar).show()
-          $('#hiddenAvatar').val(result[0].avatar)
-        }
-      })
-      
-    })
-    //文章上传
-    $('#addForm').on('submit',function(){
-      $.ajax({
-        type:'post',//get或post
-        url:'/posts',//请求的地址
-        data:$(this).serialize(),
-        success:function(result){//成功的回调函数
-          location.href = 'posts.html'
-        }
-      })
-      return false;
-    })
+<script type="text/html" id="modifyTpl">
+        <form class="row" id="modifyForm" data-id="{{_id}}">
+            <div class="col-md-9">
+              <div class="form-group">
+                <label for="title" >标题</label>
+                <input id="title" class="form-control input-lg" type="text" placeholder="文章标题" name="title" value="{{title}}">
+              </div>
+              <div class="form-group">
+                <label for="content">内容</label>
+                <textarea id="content" class="form-control input-lg" cols="30" rows="10" placeholder="内容" name="content" >{{content}}</textarea>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="feature">文章封面</label>
+                <!-- show when image chose -->
+                <img class="help-block thumbnail" src="{{thumbnail}}">
+                <input id="feature" class="form-control" type="file">
+                <input type="hidden" name="thumbnail" id="hiddenAvatar" value="{{thumbnail}}">
+              </div>
+              <div class="form-group">
+                <label for="category">所属分类</label>
+                <select id="category" class="form-control" name="category">
+                  {{each categories}}
+                  <option {{$value._id == category._id?'selected':''}} value="{{$value._id}}">{{$value.title}}</option>
+                  {{/each}}
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="created">发布时间</label>
+                <input id="created" class="form-control" type="date" name="createAt" value={{createAt.split('T')[0]}}>
+              </div>
+              <div class="form-group">
+                <label for="status">状态</label>
+                <select id="status" class="form-control" name="state">
+                  <option value="0">激活</option>
+                  <option value="1">未激活</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <button class="btn btn-primary" type="submit">修改</button>
+              </div>
+            </div>
+          </form>
 </script>
+<script src="../assets/js/post-add.js"></script>
 
 
